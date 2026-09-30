@@ -1,0 +1,57 @@
+// Small 2-Tap FIR Filter
+// Arduino UNO + 2 Potentiometers + 2 LEDs
+
+const int pot1 = A0;   // Current input x[n]
+const int pot2 = A1;   // Previous input x[n-1]
+
+const int redLED = 8;
+const int greenLED = 9;
+
+// FIR coefficients
+float h0 = 0.5;
+float h1 = 0.5;
+
+void setup()
+{
+  pinMode(redLED, OUTPUT);
+  pinMode(greenLED, OUTPUT);
+
+  Serial.begin(9600);
+
+  Serial.println("2-TAP FIR FILTER");
+  Serial.println("================");
+}
+
+void loop()
+{
+  // Read potentiometer values
+  int x_n = analogRead(pot1);
+  int x_previous = analogRead(pot2);
+
+  // FIR calculation
+  float output = (h0 * x_n) + (h1 * x_previous);
+
+  // Display values
+  Serial.print("x[n] = ");
+  Serial.print(x_n);
+
+  Serial.print(" | x[n-1] = ");
+  Serial.print(x_previous);
+
+  Serial.print(" | FIR Output = ");
+  Serial.println(output);
+
+  // LED indication
+  if (output < 512)
+  {
+    digitalWrite(redLED, HIGH);
+    digitalWrite(greenLED, LOW);
+  }
+  else
+  {
+    digitalWrite(redLED, LOW);
+    digitalWrite(greenLED, HIGH);
+  }
+
+  delay(500);
+}
